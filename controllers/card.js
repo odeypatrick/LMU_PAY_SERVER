@@ -11,7 +11,13 @@ exports.addCard = (req, res) => {
 }
 
 exports.getCard = (req, res) => {
-    Card.findOne({ regNumber: req.params.regNumber }).populate('user').exec()
-    .then(card => res.status(200).json(card))
-    .catch(err => res.status(500).json(err))
+    Card.findOne({ regNumber: req.params.regNumber })
+    .then(card => {
+        console.log(card)
+        res.status(200).json(card)
+        .catch(err => {
+            console.log(err)
+            res.status(500).json({ error: err })
+        })
+    })
 }

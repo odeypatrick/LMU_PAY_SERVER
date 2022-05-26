@@ -15,12 +15,6 @@ const userSchema = new mongoose.Schema({
         lowercase: true,
         unique: true
     },
-    phone: {
-        type: String,
-        required: true,
-        unique: true,
-        trim: true
-    },
     profileImage: {
         type: String
     },
@@ -28,13 +22,13 @@ const userSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    password: {
+        type: "String",
+        required: true 
+    },
     role: {
         type: Number,
         required: true
-    },
-    card: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Card'
     }
 }, { timestamps: true })
 

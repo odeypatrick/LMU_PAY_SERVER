@@ -3,9 +3,9 @@ const jwt = require('jsonwebtoken')
 const User = require('../../models/User')
 
 exports.signup = (req, res) => {
-    const { fullname, email, password } = req.body
-    if (!email || !password || !fullname) {
-        res.json({  success: false, msg: 'Enter all fields' })
+    const { name, email, password } = req.body
+    if (!email || !password || !name) {
+        res.status(403).json({  success: false, msg: 'Enter all fields' })
     }
     else {
         User.findOne({ email }, (err, user) => {
@@ -56,13 +56,12 @@ exports.login = (req, res) => {
 exports.getUserData = (req, res) => {
     User.findOne({ _id: req.user.userId }).exec()
     .then(user => {
-        const { _id, name, email, role, profileImage, phone } = user
+        const { _id, name, email, role, phone } = user
         res.status(200).json({
             _id,
             name,
             email,
             phone,
-            profileImage,
             role
         })
     })
