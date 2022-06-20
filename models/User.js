@@ -15,9 +15,6 @@ const userSchema = new mongoose.Schema({
         lowercase: true,
         unique: true
     },
-    profileImage: {
-        type: String
-    },
     regNumber: {
         type: Number,
         required: true

@@ -3,12 +3,12 @@ const jwt = require('jsonwebtoken')
 const User = require('../../models/User')
 
 exports.signup = (req, res) => {
-    const { name, email, password } = req.body
+    const { name, email, regNumber, password } = req.body
     if (!email || !password || !name) {
         res.status(403).json({  success: false, msg: 'Enter all fields' })
     }
     else {
-        User.findOne({ email }, (err, user) => {
+        User.findOne({ regNumber }, (err, user) => {
             //check for server errors
             if(err) {
                 return res.status(500).json({ success: false, error: "Something went wrong" })
@@ -33,9 +33,9 @@ exports.signup = (req, res) => {
 }
 
 exports.login = (req, res) => {
-    const { email, password } = req.body
+    const { regNumber, password } = req.body
     User.findOne({
-        email
+        regNumber
     }, function (err, user) {
         // Handle server errors
             if (err) return res.status(500).send({success: false, msg: 'Something went wrong'})
