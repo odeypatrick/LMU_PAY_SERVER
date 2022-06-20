@@ -14,9 +14,11 @@ app.use(cors())
 // ROUTES
 const userRoute = require('./routes/api/auth')
 const cardRoute = require('./routes/api/card')
+const IndexRoute = require('./routes/api/index')
 
 app.use('/api', userRoute)
 app.use('/api', cardRoute)
+app.use('/api', IndexRoute)
 
 const PORT = process.env.PORT || 5000;
 
