@@ -8,6 +8,10 @@ const walletSchema = Schema(
       required: true,
       ref: "users",
     },
+    regNumber: {
+      required: true,
+      type: Number
+    }
   },
   { timestamps: true }
 );

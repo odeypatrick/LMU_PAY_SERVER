@@ -4,18 +4,21 @@ const User = require("../../models/User");
 const Wallet = require("../../models/wallet");
 const WalletTransaction = require("../../models/wallet_transaction");
 const Transaction = require("../../models/transaction");
+const Ravepay = require('flutterwave-node');
 
 // Validating User wallet
 const validateUserWallet = async (userId) => {
     try {
       // check if user have a wallet, else create wallet
       const userWallet = await Wallet.findOne({ userId });
+      const user = await User.findOne({ userId });
   
       // If user wallet doesn't exist, create a new one
       if (!userWallet) {
         // create wallet
         const wallet = await Wallet.create({
           userId,
+          regNumber: user.regNumber
         });
         return wallet;
       }
@@ -85,6 +88,21 @@ const validateUserWallet = async (userId) => {
     }
   };
 
+  // Deduct money from wallet
+  const deductWallet = async (regNumber, amount) => {
+    try {
+      // update wallet
+      const wallet = await Wallet.findOneAndUpdate(
+        { regNumber },
+        { $inc: { balance: -amount } },
+        { new: true }
+      );
+      return wallet;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   router.get("/response/:transaction_id", async (req, res) => {
     const { transaction_id } = req.params;
   
@@ -135,5 +153,37 @@ const validateUserWallet = async (userId) => {
       console.log(err);
     }
   });
+
+  const rave = new Ravepay(process.env.FLW_PUBLIC_KEY, process.env.FLW_SECRET_KEY);
+
+  const transfer = async () => {
+      try {
+          const payload = {
+              "account_bank": "044",
+              "account_number": "2217317517",
+              "amount": 500,
+              "narration": "New transfer",
+              "currency": "NGN",
+              "reference":"trans-"+ Date.now()
+          }
+          const response = await rave.Transfer.initiate(payload)
+          console.log(response)
+
+      } catch (error) {
+          console.log(error)
+      }
+  }
+
+  router.post('/wallet/charge', async (req, res) => {
+    const { regNumber, amount } = req.body
+    // console.log(regNumber)
+    await deductWallet(regNumber, amount);
+    
+    await transfer();
+
+    return res.status(200).json({
+      response: "wallet deducted successfully",
+    });
+  })
 
   module.exports = router;
